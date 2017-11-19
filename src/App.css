@@ -1,0 +1,35 @@
+.App {
+  text-align: center;
+}
+
+.header {
+  background-color: #ffffff; 
+}
+
+.logo {
+  height: 100%;
+  width: 17%;
+}
+
+.logo img {
+  height: 100%;
+}
+
+.menu {
+  position: absolute;
+  left: 27%;
+  top: 0;
+}
+
+.ant-carousel .slick-slide {
+  text-align: center;
+  height: 400px;
+  line-height: 400px;
+  background: #364d79;
+  overflow: hidden;
+  margin-top: 64px;
+}
+
+.ant-carousel .slick-slide h3 {
+  color: #fff;
+}
