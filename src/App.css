@@ -2,8 +2,12 @@
   text-align: center;
 }
 
-.header {
-  background-color: #ffffff; 
+.ant-layout-header {
+  background-color: #ffffff !important; 
+}
+
+h1 {
+  color: #108ee9;
 }
 
 .logo {
@@ -25,11 +29,40 @@
   text-align: center;
   height: 400px;
   line-height: 400px;
-  background: #364d79;
+  background: #ffffff;
   overflow: hidden;
   margin-top: 64px;
 }
 
 .ant-carousel .slick-slide h3 {
   color: #fff;
+}
+
+.ant-carousel .slick-dots li button  {
+  background: #108ee9 !important;
+}
+
+.showcase-block {
+  border: none;
+  box-shadow: 0px 0px 5px #404040;
+  height: 200px;
+  transition: all 0.8s ease;
+  text-align: center;
+}
+
+.showcase-block:hover {
+  box-shadow: 0px 0px 20px #404040;
+}
+
+.showcase-img {
+  padding: 5%;
+  height: 90%;
+}
+
+.showcase-row {
+  padding-bottom: 50px;
+}
+
+.bottom-search:focus {
+
 }
