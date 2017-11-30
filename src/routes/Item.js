@@ -11,78 +11,162 @@ import img6 from '../img/Products/iPhoneX/show6.png';
 import img7 from '../img/Products/iPhoneX/show7.png';
 import img8 from '../img/Products/iPhoneX/show8.png';
 
-import { Layout, Breadcrumb, Icon, Carousel, Row, Col, Form, Select, Button, Table, Rate  } from 'antd'
+import { Layout, Breadcrumb, Icon, Carousel, Row, Col, Form, Select, Button, Table, Rate, Tabs, notification, Popover, Input } from 'antd'
 
 const { Content, Sider } = Layout;
+const { TextArea } = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
 
 const showGrey = [img1, img2, img3, img4];
 const showSilver = [img5, img6, img7, img8];
+
 
 const reviewCol = [{
     title: 'Name',
     dataIndex: 'name',
     key: 'name'
-  }, {
+}, {
     title: 'Rating',
     dataIndex: 'rating',
     key: 'rating',
     render: stars => <Rate disabled defaultValue={stars} />
-  }, {
+}, {
     title: 'Comments',
     dataIndex: 'comments',
     key: 'comments',
-  }];
+}];
 
-  const reviewData = [{
-    key: '1',
-    name: 'Chet',
-    rating: 5,
-    comments: 'good phone'
-  }];
+const reviewData = [];
 
 
 class Item extends Component {
 
-    constructor(){
+    constructor() {
         super();
         this.state = {
             price: 1799,
-            currentShow: showGrey
+            currentShow: showGrey,
+            addingToCart: false,
+            cartCount: 0,
+            newReviewVisible: false
         };
     }
 
-
+    openNotification = () => {
+        notification.open({
+            message: 'Item Added!',
+            description: 'Your Item has been added to your cart.',
+            icon: <Icon type="check" />
+        });
+    };
 
     handlePriceChange = (e) => {
         var capac = parseInt(e);
-        if(isNaN(capac)){
+        if (isNaN(capac)) {
             return;
         }
-        if(capac == 64){
-            this.setState({price: 1799});
-        }if(capac == 256){
-            this.setState({price: 2099});
+        if (capac == 64) {
+            this.setState({ price: 1799 });
+        } if (capac == 256) {
+            this.setState({ price: 2099 });
         }
     }
 
     handleColorChange = (e) => {
-        if(e == 'silver'){
+        if (e == 'silver') {
             this.setState({
                 currentShow: showSilver
             });
-        }else{
+        } else {
             this.setState({
                 currentShow: showGrey
             });
         }
     }
 
+    handleReviewVisibilityChange = () => {
+        if(this.state.newReviewVisible === false){
+            this.setState({
+                newReviewVisible: true
+            });
+        }else{
+            this.setState({
+                newReviewVisible: false
+            });
+        }
+
+    }
+
+
+    handleAddToCart = () => {
+        var icon = document.getElementsByClassName('add-to-cart')[0];
+        var button = document.getElementsByClassName('add-button')[0];
+
+        this.setState({
+            addingToCart: true
+        });
+        button.childNodes[1].textContent = "Adding...";
+        icon.classList.add('hide');
+        setTimeout(() => {
+            this.setState({
+                addingToCart: false,
+                cartCount: this.state.cartCount + 1
+
+            });
+            icon.classList.remove('hide');
+            button.childNodes[1].textContent = "Add to Cart";
+            this.openNotification();
+        }, 2000);
+
+
+    }
+
+    submitNewReview = () => {
+        var rName = document.getElementsByClassName('new-review-name')[0].value;
+        var rRate = document.getElementsByClassName('new-review-rating')[0].childNodes;
+        var rText = document.getElementsByClassName('new-review-text')[0].value;
+        var rateCount = 0;
+
+        if(rName || rText != ""){
+            rRate.forEach(function(element) {
+                if(element.classList.contains('ant-rate-star-full')){
+                    rateCount++;
+                }
+            });
+    
+            reviewData.push({
+                key: reviewData.length + 1,
+                name: rName,
+                rating: rateCount,
+                comments: rText,
+            });
+        }
+
+        
+        this.handleReviewVisibilityChange();
+    }
+
+
+
     render() {
+
+        var newReviewContent = (
+            <div>
+                <Rate className="new-review-rating"/>
+                <Input className="new-review-name" placeholder="Name"/>
+                <TextArea className="new-review-text" rows={6} size="large" placeholder="Your thoughts..."/>
+                <ul className="popover-buttons">
+                    <li><Button className="new-review-submit" type="primary" onClick={this.submitNewReview}>Submit</Button></li>
+                    <li><Button className="new-review-close" type="default" onClick={this.handleReviewVisibilityChange}>Close</Button></li>
+                </ul>
+            </div>
+        );
+
         return (
             <Layout >
-                <Banner />
+                <Banner cartCount={this.state.cartCount} />
                 <Content style={{ background: "#fff", position: "relative", top: "70px", padding: "0 50px" }}>
                     <Breadcrumb style={{ paddingTop: "10px" }}>
                         <Breadcrumb.Item href="">
@@ -124,46 +208,71 @@ class Item extends Component {
                             <div className="product-info-opening">
                                 <h1>Apple iPhone X</h1>
                                 <span className="model-number">Model A1578</span>
-                                <h3>Description</h3>
-                                <p>
-                                    Lorem ipsum dolor sit amet, in eos graeco aperiam adipiscing, vix homero eripuit periculis eu. Case erat doming usu ex, eu sit inimicus democritum, nam consetetur percipitur ad. Et ignota quidam dissentias pri. Odio feugait in eam, eos vero populo molestiae ex, simul aperiri vituperata eos id. Euismod similique ex quo. Cum delenit perfecto contentiones eu. Sit maiorum recusabo id, ea vim eros lorem sadipscing.
-                                </p>
-                                <h3>Configuration</h3>
-                                <p>Choose your recipe</p>
-                                <div className="config-form">
-                                    <Form layout="inline">
-                                        <FormItem label="Color">
-                                            <Select defaultValue="Space Grey" onChange={this.handleColorChange}>
-                                                <Option value="silver">Silver</Option>
-                                                <Option value="grey">Space Grey</Option>
-                                            </Select>
-                                        </FormItem>
-                                        <FormItem label="Capacity">
-                                            <Select defaultValue="64" onChange={this.handlePriceChange}>
-                                                <Option value="64">64 GB</Option>
-                                                <Option value="256">256 GB</Option>
-                                            </Select>
-                                        </FormItem>
-                                        <h1 className="price">${this.state.price}</h1>
-                                        <FormItem>
-                                            <Button type="primary" htmlType="submit"><Icon type="shopping-cart"/>Add to Cart</Button>
-                                        </FormItem>
-                                    </Form>
+                                <div className="tabs">
+                                    <Tabs defaultActiveKey="1">
+                                        <TabPane tab="Description" key="1">
+                                            <p>Lorem ipsum dolor sit amet, in eos graeco aperiam adipiscing, vix homero eripuit periculis eu. Case erat doming usu ex, eu sit inimicus democritum, nam consetetur percipitur ad. Et ignota quidam dissentias pri. Odio feugait in eam, eos vero populo molestiae ex, simul aperiri vituperata eos id. Euismod similique ex quo. Cum delenit perfecto contentiones eu. Sit maiorum recusabo id, ea vim eros lorem sadipscing.</p>
+                                        </TabPane>
+                                        <TabPane tab="Specs" key="2">
+                                            <ul>
+                                                <li>5.8" Retina HD display with True Tone.</li>
+                                                <li>A11 Bionic Processor.</li>
+                                                <li>IP67 water & dust resistance.</li>
+                                                <li>12-megapixel dual cameras with OIS.</li>
+                                                <li>4K video recording at 60FPS.</li>
+                                                <li>7-megapixel FaceTime HD camera with Retina Flash.</li>
+                                                <li>Touch ID.</li>
+                                                <li>Qi Wireless charging.</li>
+                                            </ul>
+                                        </TabPane>
+                                    </Tabs>
+                                </div>
+                                <div className="config-panel">
+                                    <h3>Configuration</h3>
+                                    <p>Choose your recipe</p>
+                                    <div className="config-form">
+                                        <Form layout="inline">
+                                            <FormItem label="Color">
+                                                <Select defaultValue="Space Grey" onChange={this.handleColorChange}>
+                                                    <Option value="silver">Silver</Option>
+                                                    <Option value="grey">Space Grey</Option>
+                                                </Select>
+                                            </FormItem>
+                                            <FormItem label="Capacity">
+                                                <Select defaultValue="64" onChange={this.handlePriceChange}>
+                                                    <Option value="64">64 GB</Option>
+                                                    <Option value="256">256 GB</Option>
+                                                </Select>
+                                            </FormItem>
+                                            <h1 className="price">${this.state.price}</h1>
+                                            <FormItem>
+                                                <Button className="add-button" type="primary" htmlType="submit" loading={this.state.addingToCart} onClick={this.handleAddToCart}><Icon className="add-to-cart" type="shopping-cart" />Add to Cart</Button>
+                                            </FormItem>
+                                        </Form>
 
+                                    </div>
                                 </div>
                             </div>
                         </Col>
                     </Row>
                     <Row className="product-reviews-row">
-                        <Col xs={{span: 24 }}>
+                        <Col xs={{ span: 6 }}>
                             <div className="product-reviews-header">
                                 <h1>Reviews</h1>
-                                <Button type="default"><Icon type="star-o"/>Add a Review</Button>
+                                <Popover className="popover-new-review" content={newReviewContent} title="New Review" placement="right" trigger="click" visible={this.state.newReviewVisible}>
+                                    <Button className="new-review" type="default" onClick={this.handleReviewVisibilityChange}><Icon type="star-o" />Add a Review</Button>
+                                </Popover>
                             </div>
                         </Col>
                     </Row>
+
+
+
+
+
+
                     <Row className="product-reviews-body">
-                        <Col xs={{span: 24}}>
+                        <Col xs={{ span: 24 }}>
                             <Table dataSource={reviewData} columns={reviewCol} />
                         </Col>
                     </Row>

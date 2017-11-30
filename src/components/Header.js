@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Input, Avatar, Button } from 'antd';
+import { Layout, Menu, Input, Avatar, Button, Badge } from 'antd';
 import logo from '../img/logo2.png';
 
 const { Header } = Layout;
 const { Search } = Input;
 
 class Banner extends Component {
+
+    state = {
+        cartCount: this.props.cartCount
+    }
+
     render() {
 
+        console.log("header cartcount: " + this.props.cartCount);
         /**Styles */
         
         const header = {
@@ -37,19 +43,17 @@ class Banner extends Component {
             width: 200,
             position: "relative",
             left: "510px",
-            top: "-115px"
+            top: "-110px"
         }
 
         const avatar = {
-            position: "relative",
-            left: "650px",
-            top: "-100px"
+            position: "relative"
         }
 
         const button = {
             position: "relative",
-            left: "670px",
-            top: "-115px"
+            top: "-63px",
+            left: "55px"
         };
 
         return (
@@ -63,8 +67,13 @@ class Banner extends Component {
                     <Menu.Item key="extras" style={menuItem}>Extras</Menu.Item>
                 </Menu>
                 <Search placeholder="Search" style={search} />
-                <Avatar size="large" icon="user" style={avatar} />
-                <Button type="primary" style={button}>Log In</Button>
+                <div className="user">
+                    <Badge count={this.props.cartCount}>
+                        <Avatar size="large" icon="user" style={avatar} />
+                    </Badge>
+                    <Button type="primary" style={button}>Log In</Button>
+                </div>
+                
             </Header>
         );
     }
