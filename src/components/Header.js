@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Input, Avatar, Button, Badge } from 'antd';
+import { Layout, Menu, Input, Avatar, Button, Badge, Dropdown, Icon } from 'antd';
 import logo from '../img/logo2.png';
 
+const ButtonGroup = Button.Group;
 const { Header } = Layout;
 const { Search } = Input;
 
@@ -15,7 +16,7 @@ class Banner extends Component {
 
         console.log("header cartcount: " + this.props.cartCount);
         /**Styles */
-        
+
         const header = {
             position: "fixed",
             zIndex: 3,
@@ -56,6 +57,7 @@ class Banner extends Component {
             left: "55px"
         };
 
+
         return (
             <Header style={header}>
                 <div className="logo">
@@ -71,9 +73,14 @@ class Banner extends Component {
                     <Badge count={this.props.cartCount}>
                         <Avatar size="large" icon="user" style={avatar} />
                     </Badge>
-                    <Button type="primary" style={button}>Log In</Button>
                 </div>
-                
+                <div className="account-buttons">
+                    <ButtonGroup>
+                        <Button type="primary">Log In</Button>
+                        <Button>Sign Up</Button>
+                    </ButtonGroup>
+                </div>
+
             </Header>
         );
     }

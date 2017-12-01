@@ -17,6 +17,12 @@
   top: -175px;
 }
 
+.account-buttons {
+  position: relative;
+  top: -239px;
+  left: 830px;
+}
+
 h1 {
   color: #108ee9;
 }
@@ -36,6 +42,27 @@ h1 {
   top: 0;
 }
 
+.top-breadcrumb {
+  padding-top: 10px;
+}
+
+.heading-row {
+  padding-top: 20px;
+}
+
+.page-body { 
+  background: #ffffff; 
+  position: relative; 
+  top: 70px;
+  padding: 0 50px;
+}
+
+.signup-form-row .ant-input {
+  width: 200px;
+  left: 0;
+    
+}
+
 .ant-carousel .slick-slide {
   text-align: center;
   height: 400px;
@@ -51,6 +78,10 @@ h1 {
 
 .ant-carousel .slick-dots li button  {
   background: #108ee9 !important;
+}
+
+.ant-form-item {
+  margin-bottom: 10px !important;
 }
 
 .showcase-block {
