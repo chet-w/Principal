@@ -23,10 +23,7 @@ class Signup extends Component {
                             <Icon type="home" />
                         </Breadcrumb.Item>
                         <Breadcrumb.Item href="">
-                            <Icon type="appstore-o" /><span>Products</span>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item href="">
-                            <Icon type="mobile" /><span>Phones</span>
+                            <Icon type="user-add" /><span>Sign Up</span>
                         </Breadcrumb.Item>
                     </Breadcrumb>
                     <Row className="heading-row">
@@ -39,6 +36,9 @@ class Signup extends Component {
                     <Row className="signup-form-row">
                         <Col xs={{span: 20}}>
                             <Register/>
+                        </Col>
+                        <Col xs={{span: 4}}>
+                            <Icon type='user-add' className="sign-up-img"/>
                         </Col>
                     </Row>
 

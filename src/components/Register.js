@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete, Modal } from 'antd';
+import { Form, Input, Select, Row, Col, Checkbox, Button, Modal } from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const AutoCompleteOption = AutoComplete.Option;
 
 
-class RegistrationForm extends React.Component {
+
+class RegistrationForm extends Component {
     state = {
         confirmDirty: false,
-        autoCompleteResult: [],
-        modelVisable: false
+        modelVisable: false,
+        dbEmails: ["chethana96@gmail.com"]
     };
 
     showModal = () => {
-        console.log("here");
         this.setState({
             modelVisable: true,
         });
@@ -35,6 +34,22 @@ class RegistrationForm extends React.Component {
             }
         });
     }
+
+    checkEmail = (rule, value, callback) => {
+        var found = false;
+        this.state.dbEmails.forEach(function(element) {
+            if(element === value){
+                found = true;
+            }
+        }, this);
+
+        if(found === true){
+            callback('Someone already has an Account with that email, try another one.')
+        }else{
+            callback();
+        }
+    }
+
     handleConfirmBlur = (e) => {
         const value = e.target.value;
         this.setState({ confirmDirty: this.state.confirmDirty || !!value });
@@ -42,7 +57,7 @@ class RegistrationForm extends React.Component {
     checkPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('password')) {
-            callback('Two passwords that you enter is inconsistent!');
+            callback('Please ensure your passwords match.');
         } else {
             callback();
         }
@@ -59,9 +74,6 @@ class RegistrationForm extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { autoCompleteResult } = this.state;
-
-
         const tailFormItemLayout = {
             wrapperCol: {
                 xs: {
@@ -82,17 +94,21 @@ class RegistrationForm extends React.Component {
             </Select>
             );
 
-        const websiteOptions = autoCompleteResult.map(website => (
-            <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
-        ));
-
         return (
-            <Form onSubmit={this.handleSubmit} layout="inline">
+            <Form onSubmit={this.handleSubmit} >
                 <Row>
                     <Col xs={{ span: 12 }} >
                         <FormItem label="First Name" hasFeedback>
                             {getFieldDecorator('firstname', {
-                                rules: [{ required: true, message: 'Please enter your First Name', whitespace: true }],
+                                rules: [{ 
+                                    required: true,
+                                    message: 'Please enter your First Name.',
+                                    whitespace: true
+                                },
+                                {
+                                    pattern: "^[a-zA-Z]+$",
+                                    message: 'Please only include letters in your First Name.'
+                                }]
                             })(
                                 <Input />
                                 )}
@@ -102,7 +118,16 @@ class RegistrationForm extends React.Component {
                         <FormItem
                             label="Surname" hasFeedback>
                             {getFieldDecorator('surname', {
-                                rules: [{ required: true, message: 'Please enter your Surname', whitespace: true }],
+                                rules: [{ 
+                                    required: true, 
+                                    message: 'Please enter your Surname.', 
+                                    whitespace: true,
+                                    }
+                                    ,
+                                {
+                                    pattern: "^[a-zA-Z]+$",
+                                    message: 'Please only include letters in your Surname.'
+                                }],
                             })(
                                 <Input />
                                 )}
@@ -110,16 +135,18 @@ class RegistrationForm extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col xs={{ span: 24 }} >
+                    <Col xs={{ span: 12 }} >
                         <FormItem label="E-mail" hasFeedback>
                             {getFieldDecorator('email', {
                                 rules: [{
                                     type: 'email',
-                                    message: 'Please enter a valid E-mail',
+                                    message: 'Please enter a valid E-mail.',
                                 }, {
                                     required: true,
-                                    message: 'Please input your E-mail!',
-                                }],
+                                    message: 'Please enter your E-mail.',
+                                },{
+                                    validator: this.checkEmail,
+                                  }],
                             })(
                                 <Input />
                                 )}
@@ -128,14 +155,21 @@ class RegistrationForm extends React.Component {
                 </Row>
                 <Row>
                     <Col xs={{ span: 12 }}>
-                        <FormItem label="Password" hasFeedback>
+                        <FormItem label="Password (between 6 and 15 characters)" hasFeedback>
                             {getFieldDecorator('password', {
                                 rules: [{
                                     required: true,
-                                    message: 'Please input your password',
+                                    message: 'Please input your password.',
                                 }, {
                                     validator: this.checkConfirm,
-                                }],
+                                },{
+                                    min: 6,
+                                    message: 'Password must be at least than 6 characters.'
+                                },{
+                                    max: 15,
+                                    message: 'Password cannot be more than 15 characters.'
+                                }
+                                ],
                             })(
                                 <Input type="password" />
                                 )}
@@ -147,7 +181,7 @@ class RegistrationForm extends React.Component {
                             {getFieldDecorator('confirm', {
                                 rules: [{
                                     required: true,
-                                    message: 'Please confirm your password',
+                                    message: 'Please confirm your password.',
                                 }, {
                                     validator: this.checkPassword,
                                 }],
@@ -158,37 +192,47 @@ class RegistrationForm extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col xs={{ span: 24 }}>
-                        <FormItem label="Phone Number" >
+                    <Col xs={{ span: 18 }}>
+                        <FormItem label="Phone Number" hasFeedback >
                             {getFieldDecorator('phone', {
                                 rules: [{
                                     required: true,
                                     message: 'Please input your phone number'
+                                },{
+                                    pattern: '^[0-9]+$',
+                                    message: 'Please only include numbers in your phone number.'
                                 }],
                             })(
-                                <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+                                <Input className="phone-input" addonBefore={prefixSelector} />
                                 )}
                         </FormItem>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={{ span: 12 }}>
-                        <FormItem label="Unit Number">
+                        <FormItem label="Unit Number" hasFeedback>
                             {getFieldDecorator('unitNumber', {
                                 rules: [{
                                     required: false
-                                }],
+                                },{
+                                    pattern: "^[a-zA-Z0-9_.-]*$",
+                                    message: "Please do not include symbols in your Unit Number."
+                                }
+                                ],
                             })(
                                 <Input />
                                 )}
                         </FormItem>
                     </Col>
                     <Col xs={{ span: 12 }}>
-                        <FormItem label="Street Number">
+                        <FormItem label="Street Number" hasFeedback>
                             {getFieldDecorator('streetNumber', {
                                 rules: [{
                                     required: true,
                                     message: 'Please enter your Street Number'
+                                },{
+                                    pattern: '^[0-9]+$',
+                                    message: 'Please enter only numbers for your Street Number'
                                 }],
                             })(
                                 <Input type="number" min={0} />
@@ -198,11 +242,15 @@ class RegistrationForm extends React.Component {
                 </Row>
                 <Row>
                     <Col xs={{ span: 12 }}>
-                        <FormItem label="Street Name">
+                        <FormItem label="Street Name" hasFeedback>
                             {getFieldDecorator('streetName', {
                                 rules: [{
                                     required: true,
                                     message: 'Please enter your Street Name'
+                                },
+                                {
+                                    pattern: "^[A-Za-z ]+$",
+                                    message: 'Please only include letters in your Street Name.'
                                 }],
                             })(
                                 <Input />
@@ -210,11 +258,15 @@ class RegistrationForm extends React.Component {
                         </FormItem>
                     </Col>
                     <Col xs={{ span: 12 }}>
-                        <FormItem label="Suburb">
+                        <FormItem label="Suburb" hasFeedback>
                             {getFieldDecorator('suburb', {
                                 rules: [{
                                     required: true,
                                     message: 'Please enter your Suburb'
+                                },
+                                {
+                                    pattern: "^[A-Za-z ]+$",
+                                    message: 'Please only include letters in your Suburb.'
                                 }],
                             })(
                                 <Input />
@@ -224,11 +276,15 @@ class RegistrationForm extends React.Component {
                 </Row>
                 <Row>
                     <Col xs={{ span: 12 }}>
-                        <FormItem label="City">
+                        <FormItem label="City" hasFeedback>
                             {getFieldDecorator('city', {
                                 rules: [{
                                     required: true,
                                     message: "Please enter your City"
+                                },
+                                {
+                                    pattern: "^[A-Za-z ]+$",
+                                    message: 'Please only include letters in your City.'
                                 }],
                             })(
                                 <Input />
@@ -236,11 +292,17 @@ class RegistrationForm extends React.Component {
                         </FormItem>
                     </Col>
                     <Col xs={{ span: 12 }}>
-                        <FormItem label="Postcode">
+                        <FormItem label="Postcode" hasFeedback>
                             {getFieldDecorator('postcode', {
                                 rules: [{
                                     required: true,
                                     message: 'Please enter your Postcode'
+                                },{
+                                    pattern: '^[0-9]+$',
+                                    message: 'Please enter only numbers for your Postcode.'
+                                },{
+                                    len: 4,
+                                    message: 'Postcode must be exactly 4 numbers in length.'
                                 }],
                             })(
                                 <Input type="number" min={0} />
@@ -253,6 +315,10 @@ class RegistrationForm extends React.Component {
                         <FormItem {...tailFormItemLayout} style={{ marginBottom: 8 }}>
                             {getFieldDecorator('agreement', {
                                 valuePropName: 'checked',
+                                rules: [{
+                                    required: true,
+                                    message: 'You need to agree to our Terms and Conditions'
+                                }]
                             })(
                                 <Checkbox>I have read the <a onClick={this.showModal}>Terms and Conditions</a>.</Checkbox>
                                 )}

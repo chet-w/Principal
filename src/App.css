@@ -58,9 +58,23 @@ h1 {
 }
 
 .signup-form-row .ant-input {
-  width: 200px;
+  width: 300px;
   left: 0;
     
+}
+
+.has-feedback:after {
+  left: 300px;
+
+}
+
+.signup-form-row .phone-input {
+  width: 240px !important;
+}
+
+.sign-up-img {
+  margin-top: 25%;
+  font-size: 100pt;
 }
 
 .ant-carousel .slick-slide {
